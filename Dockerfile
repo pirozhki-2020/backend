@@ -26,4 +26,4 @@ COPY . .
 
 EXPOSE 8000
 ENV PYTHONPATH /code
-CMD ["gunicorn", "-c", "docker/gunicorn.conf", "backend.application.wsgi:application"]
+CMD ["gunicorn", "-c", "gunicorn.conf", "alcohall.application.wsgi:application"]
