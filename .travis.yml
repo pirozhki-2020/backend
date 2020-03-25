@@ -12,7 +12,7 @@ deploy:
   provider: script
   skip_cleanup: true
   script: 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -p22 root@104.248.83.114
-  "cd ~/alcohall/backend &&
+  "cd /home/alcohall/backend &&
   git pull origin $TRAVIS_BRANCH &&
   scripts/run_api.sh"'
   on:

@@ -26,4 +26,5 @@ COPY . .
 
 EXPOSE 8000
 ENV PYTHONPATH /code
+CMD ["python", "manage.py", "migrate"]
 CMD ["gunicorn", "-c", "gunicorn.conf", "alcohall.application.wsgi:application"]

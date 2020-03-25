@@ -1,5 +1,7 @@
-docker image rm alcohall
+docker stop alcohall
 docker container rm alcohall
+docker image rm alcohall
+
 
 docker build -t alcohall .
 docker run -itd --name alcohall -p 8000:8000 alcohall
