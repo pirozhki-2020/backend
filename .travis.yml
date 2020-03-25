@@ -1,4 +1,7 @@
 language: python
+stages:
+  - before_deploy
+  - deploy
 branches:
   only:
     - dev
