@@ -4,6 +4,7 @@
 
 ### Django ###
 .idea
+static/
 *.log
 *.pot
 *.pyc
