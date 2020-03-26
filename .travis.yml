@@ -1,6 +1,10 @@
-stages:
-  - before_deploy
-  - deploy
+language: python
+python:
+  - 3.7.7
+install:
+  - pip install -r requirements.txt
+script:
+  - pytest
 branches:
   only:
     - dev
