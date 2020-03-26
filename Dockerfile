@@ -14,6 +14,7 @@ RUN pip wheel -r /requirements.txt
 
 FROM python:${PYTHON_VERSION}
 ENV PYTHONUNBUFFERED=1
+ENV HOST='104.248.83.114'
 
 COPY --from=builder /wheels /wheels
 RUN pip install -U pip
