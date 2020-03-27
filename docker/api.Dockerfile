@@ -14,7 +14,6 @@ RUN pip wheel -r /requirements.txt
 
 FROM python:${PYTHON_VERSION}
 ENV PYTHONUNBUFFERED=1
-ENV HOST=104.248.83.114
 
 
 COPY --from=builder /wheels /wheels
@@ -26,7 +25,7 @@ RUN pip install /wheels/* \
 WORKDIR /code
 COPY . .
 
-EXPOSE 8000
+EXPOSE 10000
 ENV PYTHONPATH /code
 CMD ["python", "manage.py", "migrate"]
 CMD ["gunicorn", "-c", "docker/gunicorn.conf", "alcohall.application.wsgi:application"]

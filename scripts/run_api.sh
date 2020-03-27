@@ -4,4 +4,4 @@ docker image rm alcohall-api
 
 
 docker build -t alcohall-api -f docker/api.Dockerfile .
-docker run -itd --name alcohall-api -p 9000:9000 alcohall-api
+docker run -itd --name alcohall-api -p 10000:10000 alcohall-api
