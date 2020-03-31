@@ -35,8 +35,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'alcohall.core.apps.CoreConfig',
 ]
+
+PROJECT_APPS = [
+    'alcohall.core.apps.CoreConfig',
+    'alcohall.ingredients.apps.IngredientsConfig',
+]
+
+INSTALLED_APPS += PROJECT_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
