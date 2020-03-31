@@ -1,0 +1,43 @@
+version: "3"
+services:
+  alcohall-nginx:
+    image: nginx:latest
+    container_name: alcohall-nginx
+    ports:
+      - 8000:8000
+    volumes:
+      - ./config/nginx:/etc/nginx/conf.d
+      - ./static:/static
+    depends_on:
+      - alcohall-api
+    networks:
+      - alcohall-backend
+  alcohall-api:
+    build: .
+    container_name: alcohall-api
+    command: bash -c "python manage.py collectstatic --no-input && python manage.py makemigrations && python manage.py migrate && gunicorn alcohall.application.wsgi -b 0.0.0.0:8000"
+    restart: always
+    volumes:
+    - ./static/:/static
+    depends_on:
+      - alcohall-db
+    expose:
+      - 8000
+    networks:
+      - alcohall-backend
+  alcohall-db:
+    image: postgres:latest
+    container_name: alcohall-db
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST: alcohall-db
+    networks:
+      - alcohall-backend
+    volumes:
+      - alcohall-db-data:/var/lib/postgresql/data/
+networks:
+  alcohall-backend:
+    driver: "bridge"
+
+volumes:
+  alcohall-db-data:

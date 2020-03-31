@@ -74,7 +74,12 @@ WSGI_APPLICATION = 'alcohall.application.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'db',
+        'PORT': 5432,
     }
 }
 
@@ -116,7 +121,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = 'static/'
 
-try:
-    from alcohall.application.local_settings import *
-except ImportError:
-    pass
+if os.environ.get('IS_CONTAINERIZED'):
+    from config.container_settings import *
+else:
+    try:
+        from alcohall.application.local_settings import *
+    except ImportError:
+        pass
