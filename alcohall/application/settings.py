@@ -39,7 +39,7 @@ INSTALLED_APPS = [
 
 PROJECT_APPS = [
     'alcohall.core.apps.CoreConfig',
-    'alcohall.ingredients.apps.IngredientsConfig',
+    'alcohall.cocktail.apps.CocktailConfig',
 ]
 
 INSTALLED_APPS += PROJECT_APPS
