@@ -9,8 +9,8 @@ services:
     - ./static/:/static
     depends_on:
       - alcohall-db
-    expose:
-      - 8000
+    ports:
+    - 8000:8000
     networks:
       - alcohall-backend
   alcohall-db:
