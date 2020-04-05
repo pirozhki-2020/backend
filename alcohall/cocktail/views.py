@@ -30,6 +30,7 @@ class ListIngredientView(ListApiView):
         method = HttpMethod.GET
         tags = ['ingredients', ]
         serializer = ListIngredientSerializer
+        serializer_many = False
         query_form = ListIngredientForm
 
     def execute(self, request, *args, **kwargs):
