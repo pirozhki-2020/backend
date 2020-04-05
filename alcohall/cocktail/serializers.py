@@ -45,7 +45,7 @@ class CocktailIngredientSerializer(ModelSerializer):
     ingredient = fields.Nested(IngredientSerializer)
 
 
-class IngredientListSerializer(Serializer):
+class ListIngredientSerializer(Serializer):
     ingredients = fields.Nested(IngredientSerializer, many=True)
 
 
@@ -62,3 +62,17 @@ class CocktailSerializer(ModelSerializer):
     ingredients = fields.Nested(CocktailIngredientSerializer, many=True,
                                 attribute='_ingredients')
     tools = fields.Nested(CocktailToolSerializer, many=True, attribute='_tools')
+
+
+class BaseCocktailSerializer(ModelSerializer):
+    class SMeta:
+        model = Cocktail
+        fields = ('id', 'name',)
+
+
+class ListCocktailSerializer(Serializer):
+    cocktails = fields.Nested(BaseCocktailSerializer, many=True)
+
+    @pre_dump
+    def prepare(self, obj, **kwargs):
+        return obj
