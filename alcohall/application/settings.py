@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from django_better_admin_arrayfield.models.fields import ArrayField
+from marshmallow import fields
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -42,6 +45,16 @@ PROJECT_APPS = [
     'alcohall.core.apps.CoreConfig',
     'alcohall.cocktail.apps.CocktailConfig',
 ]
+
+
+class StrList(fields.List):
+    def __init__(self, *args, **kwargs):
+        super().__init__(fields.String, *args, **kwargs)
+
+
+SERIALIZER_FIELD_MAPPING = {
+    ArrayField: StrList,
+}
 
 INSTALLED_APPS += PROJECT_APPS
 
