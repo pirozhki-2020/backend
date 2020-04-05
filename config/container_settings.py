@@ -1,4 +1,4 @@
-ALLOWED_HOSTS = ['alcohall-api']
+ALLOWED_HOSTS = ['alcohall.space', 'www.alcohall.space']
 
 DATABASES = {
     'default': {
