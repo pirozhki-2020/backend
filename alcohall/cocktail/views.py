@@ -1,6 +1,5 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django_serializer.v2.exceptions import BadRequestError
 from django_serializer.v2.views import HttpMethod, GetApiView, \
     ListApiView
 
@@ -50,35 +49,24 @@ class GetCocktailView(GetApiView):
         serializer = CocktailSerializer
 
 
+class ListCocktailForm(forms.Form):
+    ingredient = forms.ModelMultipleChoiceField(queryset=Ingredient.objects.all())
+
+
 class ListCocktailView(ListApiView):
     class Meta:
         model = Cocktail
-        method = HttpMethod.POST
+        method = HttpMethod.GET
         tags = ['cocktails', ]
         serializer = ListCocktailSerializer
+        query_form = ListCocktailForm
         serializer_many = False
 
-    def check_payload(self):
-        self.get_request_json()
-        payload = getattr(self, '_request_json', None)
-        if not payload:
-            raise BadRequestError('empty body')
-        ingredients = payload.get('ingredients', None)
-        if not ingredients:
-            raise BadRequestError('missing or invalid ingredients field')
-        ingredients_ids = set()
-        for ingredient in ingredients:
-            if not ingredient.get('id') or not ingredient.get('volume'):
-                raise BadRequestError('wrong ingredient format')
-            ingredients_ids.add(ingredient.get('id'))
-        payload['ingredients_ids'] = ingredients_ids
-        return payload
-
     def get_queryset(self):
-        payload = self.check_payload()
         qs = super().get_queryset()
-        qs = qs.filter(
-            cocktailingredient__in=payload['ingredients_ids']) \
+        ingredients = self.request_query['ingredient']
+
+        qs = qs.filter(ingredients__in=ingredients) \
             .distinct() \
             .order_by('id')
         return {'cocktails': qs}
