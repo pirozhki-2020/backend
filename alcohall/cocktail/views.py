@@ -1,9 +1,15 @@
+import json
+
 from django import forms
 from django.core.exceptions import ValidationError
+from django.db import transaction
+from marshmallow.exceptions import ValidationError as marshmallowValidationError
+from django_serializer.v2.exceptions import BadRequestError
 from django_serializer.v2.views import HttpMethod, GetApiView, \
-    ListApiView
+    ListApiView, ApiView
 
-from alcohall.cocktail.models import Ingredient, Cocktail
+from alcohall.cocktail.models import Ingredient, Cocktail, CocktailIngredient, CocktailTool
+from alcohall.cocktail.schemas import CreateCocktailSchema
 from alcohall.cocktail.serializers import ListIngredientSerializer, \
     CocktailSerializer, ListCocktailSerializer
 
@@ -70,3 +76,31 @@ class ListCocktailView(ListApiView):
             .distinct() \
             .order_by('id')
         return {'cocktails': qs}
+
+
+class CreateCocktailView(ApiView):
+    class Meta:
+        model = Cocktail
+        method = HttpMethod.POST
+        serializer = CocktailSerializer
+        tags = ['cocktails', ]
+
+    def check_payload(self):
+        try:
+            payload = CreateCocktailSchema().load(json.loads(self.request.body))
+        except marshmallowValidationError as e:
+            raise BadRequestError(description=e.messages)
+        return payload
+
+    def execute(self, request, *args, **kwargs):
+        payload = self.check_payload()
+
+        with transaction.atomic():
+            cocktail = Cocktail.objects.create(name=payload['name'], description=payload['description'],
+                                               image_link=payload['image_link'], steps=payload['steps'])
+            for ingredient_id, volume in payload['ingredients'].items():
+                CocktailIngredient.objects.create(cocktail=cocktail, ingredient_id=ingredient_id, volume=volume)
+            for tool_id, number in payload['tools'].items():
+                CocktailTool.objects.create(cocktail=cocktail, tool_id=tool_id, number=number)
+
+        return cocktail
