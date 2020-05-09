@@ -21,7 +21,7 @@ class Command(BaseCommand):
     cocktail_ingredients = set()
 
     def handle(self, *args, **options):
-        cocktails = Cocktail.objects.filter(image=None)
+        cocktails = Cocktail.objects.filter(image__exact='')
         progress, total = 0, cocktails.count()
         self.stdout.write(f'{total} cocktails need image')
 
@@ -41,3 +41,5 @@ class Command(BaseCommand):
             else:
                 self.stderr.write(f'can not load image. source_image_link: {cocktail.source_image_link}, '
                                   f'status_code: {response.status_code}')
+        self.stdout.write(f'completed')
+
