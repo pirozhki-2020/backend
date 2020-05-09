@@ -39,9 +39,14 @@ class Cocktail(models.Model):
                                    verbose_name='инструменты')
     steps = ArrayField(models.CharField(max_length=512),
                        verbose_name='шаги рецепта')
-    image_link = models.CharField(max_length=128,
-                                  verbose_name='ссылка на фотографию')
+    source_image_link = models.CharField(max_length=128,
+                                         verbose_name='ссылка на фотографию')
+    image = models.ImageField(verbose_name='Изображение', null=True)
     author = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, verbose_name='создатель')
+
+    @property
+    def image_link(self):
+        return self.image.url
 
     def __str__(self):
         return self.name

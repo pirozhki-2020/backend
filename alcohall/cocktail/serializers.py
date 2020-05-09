@@ -52,6 +52,7 @@ class ListIngredientSerializer(Serializer):
 class CocktailSerializer(ModelSerializer):
     class SMeta:
         model = Cocktail
+        exclude = ('image', 'source_image_link',)
 
     @pre_dump
     def prepare(self, obj: Cocktail, **kwargs):
@@ -59,6 +60,7 @@ class CocktailSerializer(ModelSerializer):
         obj._tools = obj.cocktailtool_set.all()
         return obj
 
+    image_link = fields.URL()
     ingredients = fields.Nested(CocktailIngredientSerializer, many=True,
                                 attribute='_ingredients')
     tools = fields.Nested(CocktailToolSerializer, many=True, attribute='_tools')

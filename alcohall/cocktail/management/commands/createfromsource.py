@@ -1,7 +1,9 @@
-from django.core.management.base import BaseCommand, CommandError
+import json
+
+from django.core.management.base import BaseCommand
+
 from alcohall.cocktail.models import Cocktail, Ingredient, Tool, CocktailTool, \
     CocktailIngredient
-import json
 
 
 class Command(BaseCommand):
