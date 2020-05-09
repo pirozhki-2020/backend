@@ -33,7 +33,7 @@ class Command(BaseCommand):
             cocktail_model = Cocktail.objects.create(
                 name=cocktail['name'],
                 description=cocktail['description'],
-                image_link=cocktail['image_link'],
+                source_image_link=cocktail['image_link'],
                 steps=cocktail['recipe_steps'])
             for i, item in enumerate(cocktail['ingredients']):
                 ingredient, _ = Ingredient.objects.get_or_create(name=item)
