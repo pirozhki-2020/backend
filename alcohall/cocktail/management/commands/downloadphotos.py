@@ -23,9 +23,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         cocktails = Cocktail.objects.filter(image=None)
         progress, total = 0, cocktails.count()
+        self.stdout.write(f'{total} cocktails need image')
+
         for cocktail in cocktails:
             if progress % 10 == 0:
-                print(f'{progress}/{total}')
+                self.stdout.write(f'{progress}/{total}')
             progress += 1
             url = BASE_URL + cocktail.source_image_link
             response = requests.get(url, stream=True)
@@ -37,5 +39,5 @@ class Command(BaseCommand):
                 cocktail.image.name = filename
                 cocktail.save(update_fields=['image'])
             else:
-                print(f'can not load image. source_image_link: {cocktail.source_image_link}, '
-                      f'status_code: {response.status_code}')
+                self.stderr.write(f'can not load image. source_image_link: {cocktail.source_image_link}, '
+                                  f'status_code: {response.status_code}')
