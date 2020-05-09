@@ -3,5 +3,6 @@ from django.urls import path
 from alcohall.core import views
 
 urlpatterns = [
-    path('', views.index)
+    path('sign_up', views.SignUpView.as_view()),
+    path('sign_in', views.SignInView.as_view()),
 ]

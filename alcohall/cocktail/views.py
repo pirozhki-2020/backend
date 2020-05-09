@@ -3,6 +3,7 @@ import json
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db import transaction
+from django_serializer.v2.views.mixins import LoginRequiredMixin
 from marshmallow.exceptions import ValidationError as marshmallowValidationError
 from django_serializer.v2.exceptions import BadRequestError
 from django_serializer.v2.views import HttpMethod, GetApiView, \
@@ -78,7 +79,7 @@ class ListCocktailView(ListApiView):
         return {'cocktails': qs}
 
 
-class CreateCocktailView(ApiView):
+class CreateCocktailView(LoginRequiredMixin, ApiView):
     class Meta:
         model = Cocktail
         method = HttpMethod.POST
@@ -97,7 +98,8 @@ class CreateCocktailView(ApiView):
 
         with transaction.atomic():
             cocktail = Cocktail.objects.create(name=payload['name'], description=payload['description'],
-                                               image_link=payload['image_link'], steps=payload['steps'])
+                                               image_link=payload['image_link'], steps=payload['steps'],
+                                               author=self.request.user)
             for ingredient_id, volume in payload['ingredients'].items():
                 CocktailIngredient.objects.create(cocktail=cocktail, ingredient_id=ingredient_id, volume=volume)
             for tool_id, number in payload['tools'].items():

@@ -1,5 +1,6 @@
 from django.db import models
 from django_better_admin_arrayfield.models.fields import ArrayField
+from alcohall.core.models import User
 
 
 class Ingredient(models.Model):
@@ -40,6 +41,7 @@ class Cocktail(models.Model):
                        verbose_name='шаги рецепта')
     image_link = models.CharField(max_length=128,
                                   verbose_name='ссылка на фотографию')
+    author = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, verbose_name='создатель')
 
     def __str__(self):
         return self.name
