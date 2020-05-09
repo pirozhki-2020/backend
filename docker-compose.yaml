@@ -1,4 +1,4 @@
-version: "3"
+version: "2"
 services:
   alcohall-api:
     build: .
@@ -6,11 +6,11 @@ services:
     command: bash -c "python manage.py collectstatic --no-input && python manage.py makemigrations && python manage.py migrate && gunicorn alcohall.application.wsgi -b 0.0.0.0:8000"
     restart: always
     volumes:
-    - ./static/:/static
+      - ./static/:/static
     depends_on:
       - alcohall-db
     ports:
-    - 8000:8000
+      - 8000:8000
     networks:
       - alcohall-backend
   alcohall-db:

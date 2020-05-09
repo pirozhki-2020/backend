@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 PROJECT_APPS = [
     'alcohall.core.apps.CoreConfig',
     'alcohall.cocktail.apps.CocktailConfig',
+    'alcohall.selections.apps.SelectionsConfig',
 ]
 
 
