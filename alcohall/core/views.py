@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login
 from django_serializer.v2.exceptions import AuthRequiredError
 from django_serializer.v2.views import HttpMethod, ApiView
 
+from alcohall.core.errors import EmailAlreadyRegistered
 from alcohall.core.models import User
 from alcohall.core.serializers import UserSerializer
 
@@ -23,10 +24,11 @@ class SignUpView(ApiView):
         if self.request.user.is_authenticated:
             return self.request.user
 
-        email, password = self.request_body['email'], self.request_body['password']
+        email, password = self.request_body['email'], self.request_body[
+            'password']
         existed_user = User.objects.filter(email=email)
         if existed_user.exists():
-            return existed_user.first()
+            raise EmailAlreadyRegistered
         user = User.objects.create(email=email)
         user.set_password(password)
         user.save()
@@ -43,9 +45,22 @@ class SignInView(ApiView):
         serializer = UserSerializer
 
     def execute(self, request, *args, **kwargs):
-        email, password = self.request_body['email'], self.request_body['password']
+        email, password = self.request_body['email'], self.request_body[
+            'password']
         user = authenticate(request, username=email, password=password)
         if not user:
             raise AuthRequiredError
         login(request, user)
         return user
+
+
+class GetView(ApiView):
+    class Meta:
+        tags = ['user', ]
+        method = HttpMethod.GET
+        serializer = UserSerializer
+
+    def execute(self, request, *args, **kwargs):
+        if not self.request.user.is_authenticated:
+            raise AuthRequiredError
+        return self.request.user
