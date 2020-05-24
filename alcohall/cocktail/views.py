@@ -56,6 +56,11 @@ class GetCocktailView(GetApiView):
         tags = ['cocktails', ]
         serializer = CocktailSerializer
 
+    def execute(self, request, *args, **kwargs):
+        cocktail: Cocktail = self._get_object()
+        cocktail.is_liked = Like.objects.filter(user=self.request.user, cocktail=cocktail, is_active=True).exists()
+        return cocktail
+
 
 class ListCocktailForm(forms.Form):
     ingredient = forms.ModelMultipleChoiceField(queryset=Ingredient.objects.all())

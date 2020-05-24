@@ -54,6 +54,8 @@ class CocktailSerializer(ModelSerializer):
         model = Cocktail
         exclude = ('image', 'source_image_link',)
 
+    is_liked = fields.Boolean()
+
     @pre_dump
     def prepare(self, obj: Cocktail, **kwargs):
         obj._ingredients = obj.cocktailingredient_set.all()
