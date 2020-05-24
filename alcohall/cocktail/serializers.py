@@ -54,7 +54,7 @@ class CocktailSerializer(ModelSerializer):
         model = Cocktail
         exclude = ('image', 'source_image_link',)
 
-    is_liked = fields.Boolean()
+    is_liked = fields.Boolean(default=None, allow_none=True)
 
     @pre_dump
     def prepare(self, obj: Cocktail, **kwargs):

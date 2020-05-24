@@ -58,7 +58,8 @@ class GetCocktailView(GetApiView):
 
     def execute(self, request, *args, **kwargs):
         cocktail: Cocktail = self._get_object()
-        cocktail.is_liked = Like.objects.filter(user=self.request.user, cocktail=cocktail, is_active=True).exists()
+        if self.request.user.is_authenticated:
+            cocktail.is_liked = Like.objects.filter(user=self.request.user, cocktail=cocktail, is_active=True).exists()
         return cocktail
 
 
