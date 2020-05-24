@@ -1,5 +1,6 @@
 from django_serializer.v2.views import ListApiView, HttpMethod, GetApiView
-from django_serializer.v2.views.paginator import FromIdPaginator
+from django_serializer.v2.views.paginator import FromIdPaginator, \
+    DescFromIdPaginator
 
 from alcohall.selections.models import Selection
 from alcohall.selections.serializers import ListSelectionSerializer, SelectionSerializer
@@ -10,7 +11,7 @@ class SelectionsListView(ListApiView):
         model = Selection
         tags = ['selections', ]
         method = HttpMethod.GET
-        paginator = FromIdPaginator
+        paginator = DescFromIdPaginator
         serializer = ListSelectionSerializer
         serializer_many = False
 
