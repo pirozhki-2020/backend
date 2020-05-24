@@ -3,6 +3,22 @@ from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 
 
+class Like(models.Model):
+    class Meta:
+        verbose_name = 'Лайк'
+        verbose_name_plural = 'Лайки'
+
+    user = models.ForeignKey("core.User", on_delete=models.CASCADE,
+                             verbose_name='Пользователь')
+    cocktail = models.ForeignKey("cocktail.Cocktail",
+                                 on_delete=models.CASCADE,
+                                 verbose_name='Коктейль')
+    is_active = models.BooleanField(default=False, verbose_name='Активный?')
+
+    def __str__(self):
+        return f'{self.user.email} {self.cocktail.name}'
+
+
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -47,7 +63,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.CharField('E-mail', max_length=30, unique=True, null=True)
     date_joined = models.DateTimeField('Дата регистрации', auto_now_add=True)
     is_staff = models.BooleanField(default=False, verbose_name='Персонал')
-    is_superuser = models.BooleanField(default=False, verbose_name='Администратор')
+    is_superuser = models.BooleanField(default=False,
+                                       verbose_name='Администратор')
+
+    likes = models.ManyToManyField("cocktail.Cocktail", through=Like,
+                                   verbose_name='Лайки пользователя')
 
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'

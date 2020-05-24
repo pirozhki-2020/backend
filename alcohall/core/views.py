@@ -1,8 +1,11 @@
 from django import forms
 from django.contrib.auth import authenticate, login
 from django_serializer.v2.exceptions import AuthRequiredError
-from django_serializer.v2.views import HttpMethod, ApiView
+from django_serializer.v2.views import HttpMethod, ApiView, ListApiView
+from django_serializer.v2.views.mixins import LoginRequiredMixin
 
+from alcohall.cocktail.models import Cocktail
+from alcohall.cocktail.serializers import ListCocktailSerializer
 from alcohall.core.errors import EmailAlreadyRegistered
 from alcohall.core.models import User
 from alcohall.core.serializers import UserSerializer
@@ -64,3 +67,19 @@ class GetView(ApiView):
         if not self.request.user.is_authenticated:
             raise AuthRequiredError
         return self.request.user
+
+
+class LikedView(LoginRequiredMixin, ListApiView):
+    class Meta:
+        model = Cocktail
+        tags = ['user', ]
+        method = HttpMethod.GET
+        serializer = ListCocktailSerializer
+        serializer_many = False
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.filter(like__user=self.request.user, like__is_active=True) \
+            .distinct() \
+            .order_by('id')
+        return {'cocktails': qs}

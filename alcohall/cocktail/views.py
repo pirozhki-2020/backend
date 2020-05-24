@@ -13,6 +13,7 @@ from alcohall.cocktail.models import Ingredient, Cocktail, CocktailIngredient, C
 from alcohall.cocktail.schemas import CreateCocktailSchema
 from alcohall.cocktail.serializers import ListIngredientSerializer, \
     CocktailSerializer, ListCocktailSerializer
+from alcohall.core.models import Like
 
 
 class ListIngredientForm(forms.Form):
@@ -106,3 +107,25 @@ class CreateCocktailView(LoginRequiredMixin, ApiView):
                 CocktailTool.objects.create(cocktail=cocktail, tool_id=tool_id, number=number)
 
         return cocktail
+
+
+class LikeCocktailForm(forms.Form):
+    cocktail = forms.ModelChoiceField(queryset=Cocktail.objects.all())
+
+
+class LikeCocktailView(LoginRequiredMixin, ApiView):
+    class Meta:
+        model = Cocktail
+        method = HttpMethod.POST
+        body_form = LikeCocktailForm
+        tags = ['cocktails', ]
+
+    def execute(self, request, *args, **kwargs):
+        like = Like.objects.filter(user=self.request.user, cocktail=self.request_body['cocktail'])
+        if not like.exists():
+            like = Like.objects.create(user=self.request.user, cocktail=self.request_body['cocktail'])
+        else:
+            like = like.get()
+        like.is_active = not like.is_active
+        like.save(update_fields=["is_active", ])
+        return {'liked': like.is_active}
