@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from django import forms
 from django_better_admin_arrayfield.models.fields import ArrayField
 from marshmallow import fields
 
@@ -28,6 +29,8 @@ SECRET_KEY = '35ibw!yqg5p*=(a@a!ox28dhg0-(!_t4%tgfv^ezbp94_exk-g'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+SERIALIZER_FORM_FIELD_MAPPING = {forms.ModelChoiceField: fields.Integer}
 
 # Application definition
 
