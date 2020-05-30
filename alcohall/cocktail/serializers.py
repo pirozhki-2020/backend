@@ -1,8 +1,13 @@
 from django_serializer.v2.serializer import ModelSerializer, Serializer
 from marshmallow import fields, pre_dump, post_dump
 
-from alcohall.cocktail.models import Ingredient, Cocktail, Tool, \
-    CocktailIngredient, CocktailTool
+from alcohall.cocktail.models import (
+    Ingredient,
+    Cocktail,
+    Tool,
+    CocktailIngredient,
+    CocktailTool,
+)
 
 
 class IngredientSerializer(ModelSerializer):
@@ -18,13 +23,17 @@ class ToolSerializer(ModelSerializer):
 class CocktailToolSerializer(ModelSerializer):
     class SMeta:
         model = CocktailTool
-        exclude = ('cocktail_id', 'tool_id', 'id',)
+        exclude = (
+            "cocktail_id",
+            "tool_id",
+            "id",
+        )
 
     @post_dump
     def prepare(self, data: dict, **kwargs):
-        data['id'] = data['tool']['id']
-        data['name'] = data['tool']['name']
-        data.pop('tool')
+        data["id"] = data["tool"]["id"]
+        data["name"] = data["tool"]["name"]
+        data.pop("tool")
         return data
 
     tool = fields.Nested(ToolSerializer)
@@ -33,13 +42,17 @@ class CocktailToolSerializer(ModelSerializer):
 class CocktailIngredientSerializer(ModelSerializer):
     class SMeta:
         model = CocktailIngredient
-        exclude = ('cocktail_id', 'ingredient_id', 'id',)
+        exclude = (
+            "cocktail_id",
+            "ingredient_id",
+            "id",
+        )
 
     @post_dump
     def prepare(self, data: dict, **kwargs):
-        data['id'] = data['ingredient']['id']
-        data['name'] = data['ingredient']['name']
-        data.pop('ingredient')
+        data["id"] = data["ingredient"]["id"]
+        data["name"] = data["ingredient"]["name"]
+        data.pop("ingredient")
         return data
 
     ingredient = fields.Nested(IngredientSerializer)
@@ -52,7 +65,10 @@ class ListIngredientSerializer(Serializer):
 class CocktailSerializer(ModelSerializer):
     class SMeta:
         model = Cocktail
-        exclude = ('image', 'source_image_link',)
+        exclude = (
+            "image",
+            "source_image_link",
+        )
 
     is_liked = fields.Boolean(default=False)
 
@@ -63,15 +79,19 @@ class CocktailSerializer(ModelSerializer):
         return obj
 
     image_link = fields.URL()
-    ingredients = fields.Nested(CocktailIngredientSerializer, many=True,
-                                attribute='_ingredients')
-    tools = fields.Nested(CocktailToolSerializer, many=True, attribute='_tools')
+    ingredients = fields.Nested(
+        CocktailIngredientSerializer, many=True, attribute="_ingredients"
+    )
+    tools = fields.Nested(CocktailToolSerializer, many=True, attribute="_tools")
 
 
 class BaseCocktailSerializer(ModelSerializer):
     class SMeta:
         model = Cocktail
-        fields = ('id', 'name',)
+        fields = (
+            "id",
+            "name",
+        )
 
 
 class ListCocktailSerializer(Serializer):

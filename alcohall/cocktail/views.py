@@ -6,28 +6,39 @@ from django.db import transaction
 from django_serializer.v2.views.mixins import LoginRequiredMixin
 from marshmallow.exceptions import ValidationError as marshmallowValidationError
 from django_serializer.v2.exceptions import BadRequestError
-from django_serializer.v2.views import HttpMethod, GetApiView, \
-    ListApiView, ApiView
+from django_serializer.v2.views import HttpMethod, GetApiView, ListApiView, ApiView
 
-from alcohall.cocktail.models import Ingredient, Cocktail, CocktailIngredient, CocktailTool
+from alcohall.cocktail.models import (
+    Ingredient,
+    Cocktail,
+    CocktailIngredient,
+    CocktailTool,
+)
 from alcohall.cocktail.schemas import CreateCocktailSchema
-from alcohall.cocktail.serializers import ListIngredientSerializer, \
-    CocktailSerializer, ListCocktailSerializer
+from alcohall.cocktail.serializers import (
+    ListIngredientSerializer,
+    CocktailSerializer,
+    ListCocktailSerializer,
+)
 from alcohall.core.models import Like
 
 
 class ListIngredientForm(forms.Form):
     query = forms.CharField(required=False)
     id = forms.ModelMultipleChoiceField(
-        required=False, queryset=Ingredient.objects.all())
+        required=False, queryset=Ingredient.objects.all()
+    )
 
     def clean(self):
-        query = self.cleaned_data.get('query', None)
-        ingredients = self.cleaned_data.get('id', None)
+        query = self.cleaned_data.get("query", None)
+        ingredients = self.cleaned_data.get("id", None)
         if query is None and ingredients is None:
             raise ValidationError(
-                {'__all__': 'at least one parameter: "query" or "id" should '
-                            'be define'})
+                {
+                    "__all__": 'at least one parameter: "query" or "id" should '
+                    "be define"
+                }
+            )
         return self.cleaned_data
 
 
@@ -35,31 +46,36 @@ class ListIngredientView(ListApiView):
     class Meta:
         model = Ingredient
         method = HttpMethod.GET
-        tags = ['ingredients', ]
+        tags = [
+            "ingredients",
+        ]
         serializer = ListIngredientSerializer
         serializer_many = False
         query_form = ListIngredientForm
 
     def execute(self, request, *args, **kwargs):
-        if self.request_query['id']:
-            return {'ingredients': self.request_query['id']}
+        if self.request_query["id"]:
+            return {"ingredients": self.request_query["id"]}
 
-        qs = Ingredient.objects.filter(
-            name__istartswith=self.request_query['query'])
-        return {'ingredients': qs.all()}
+        qs = Ingredient.objects.filter(name__istartswith=self.request_query["query"])
+        return {"ingredients": qs.all()}
 
 
 class GetCocktailView(GetApiView):
     class Meta:
         model = Cocktail
         method = HttpMethod.GET
-        tags = ['cocktails', ]
+        tags = [
+            "cocktails",
+        ]
         serializer = CocktailSerializer
 
     def execute(self, request, *args, **kwargs):
         cocktail: Cocktail = self._get_object()
         if self.request.user.is_authenticated:
-            cocktail.is_liked = Like.objects.filter(user=self.request.user, cocktail=cocktail, is_active=True).exists()
+            cocktail.is_liked = Like.objects.filter(
+                user=self.request.user, cocktail=cocktail, is_active=True
+            ).exists()
         return cocktail
 
 
@@ -71,19 +87,19 @@ class ListCocktailView(ListApiView):
     class Meta:
         model = Cocktail
         method = HttpMethod.GET
-        tags = ['cocktails', ]
+        tags = [
+            "cocktails",
+        ]
         serializer = ListCocktailSerializer
         query_form = ListCocktailForm
         serializer_many = False
 
     def get_queryset(self):
         qs = super().get_queryset()
-        ingredients = self.request_query['ingredient']
+        ingredients = self.request_query["ingredient"]
 
-        qs = qs.filter(ingredients__in=ingredients) \
-            .distinct() \
-            .order_by('id')
-        return {'cocktails': qs}
+        qs = qs.filter(ingredients__in=ingredients).distinct().order_by("id")
+        return {"cocktails": qs}
 
 
 class CreateCocktailView(LoginRequiredMixin, ApiView):
@@ -91,7 +107,9 @@ class CreateCocktailView(LoginRequiredMixin, ApiView):
         model = Cocktail
         method = HttpMethod.POST
         serializer = CocktailSerializer
-        tags = ['cocktails', ]
+        tags = [
+            "cocktails",
+        ]
 
     def check_payload(self):
         try:
@@ -104,13 +122,21 @@ class CreateCocktailView(LoginRequiredMixin, ApiView):
         payload = self.check_payload()
 
         with transaction.atomic():
-            cocktail = Cocktail.objects.create(name=payload['name'], description=payload['description'],
-                                               image_link=payload['image_link'], steps=payload['steps'],
-                                               author=self.request.user)
-            for ingredient_id, volume in payload['ingredients'].items():
-                CocktailIngredient.objects.create(cocktail=cocktail, ingredient_id=ingredient_id, volume=volume)
-            for tool_id, number in payload['tools'].items():
-                CocktailTool.objects.create(cocktail=cocktail, tool_id=tool_id, number=number)
+            cocktail = Cocktail.objects.create(
+                name=payload["name"],
+                description=payload["description"],
+                image_link=payload["image_link"],
+                steps=payload["steps"],
+                author=self.request.user,
+            )
+            for ingredient_id, volume in payload["ingredients"].items():
+                CocktailIngredient.objects.create(
+                    cocktail=cocktail, ingredient_id=ingredient_id, volume=volume
+                )
+            for tool_id, number in payload["tools"].items():
+                CocktailTool.objects.create(
+                    cocktail=cocktail, tool_id=tool_id, number=number
+                )
 
         return cocktail
 
@@ -124,14 +150,22 @@ class LikeCocktailView(LoginRequiredMixin, ApiView):
         model = Cocktail
         method = HttpMethod.POST
         body_form = LikeCocktailForm
-        tags = ['cocktails', ]
+        tags = [
+            "cocktails",
+        ]
 
     def execute(self, request, *args, **kwargs):
-        like = Like.objects.filter(user=self.request.user, cocktail=self.request_body['cocktail'])
+        like = Like.objects.filter(
+            user=self.request.user, cocktail=self.request_body["cocktail"]
+        )
         if not like.exists():
-            like = Like.objects.create(user=self.request.user, cocktail=self.request_body['cocktail'])
+            like = Like.objects.create(
+                user=self.request.user, cocktail=self.request_body["cocktail"]
+            )
         else:
             like = like.get()
         like.is_active = not like.is_active
-        like.save(update_fields=["is_active", ])
-        return {'liked': like.is_active}
+        like.save(
+            update_fields=["is_active",]
+        )
+        return {"liked": like.is_active}

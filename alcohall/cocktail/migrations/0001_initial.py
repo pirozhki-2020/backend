@@ -9,72 +9,159 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Cocktail',
+            name="Cocktail",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=128, verbose_name='название')),
-                ('description', models.CharField(max_length=512, verbose_name='описание')),
-                ('steps', django_better_admin_arrayfield.models.fields.ArrayField(base_field=models.CharField(max_length=512), size=None, verbose_name='шаги рецепта')),
-                ('image_link', models.CharField(max_length=128, verbose_name='ссылка на фотографию')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=128, verbose_name="название")),
+                (
+                    "description",
+                    models.CharField(max_length=512, verbose_name="описание"),
+                ),
+                (
+                    "steps",
+                    django_better_admin_arrayfield.models.fields.ArrayField(
+                        base_field=models.CharField(max_length=512),
+                        size=None,
+                        verbose_name="шаги рецепта",
+                    ),
+                ),
+                (
+                    "image_link",
+                    models.CharField(
+                        max_length=128, verbose_name="ссылка на фотографию"
+                    ),
+                ),
+            ],
+            options={"verbose_name": "коктейль", "verbose_name_plural": "коктейли",},
+        ),
+        migrations.CreateModel(
+            name="Ingredient",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=128, verbose_name="название")),
             ],
             options={
-                'verbose_name': 'коктейль',
-                'verbose_name_plural': 'коктейли',
+                "verbose_name": "ингредиент",
+                "verbose_name_plural": "ингредиенты",
             },
         ),
         migrations.CreateModel(
-            name='Ingredient',
+            name="Tool",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=128, verbose_name='название')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=128, verbose_name="название")),
             ],
             options={
-                'verbose_name': 'ингредиент',
-                'verbose_name_plural': 'ингредиенты',
+                "verbose_name": "инструмент",
+                "verbose_name_plural": "инструмент",
             },
         ),
         migrations.CreateModel(
-            name='Tool',
+            name="CocktailTool",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=128, verbose_name='название')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("number", models.IntegerField()),
+                (
+                    "cocktail",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="cocktail.Cocktail",
+                        verbose_name="коктейль",
+                    ),
+                ),
+                (
+                    "tool",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="cocktail.Tool",
+                        verbose_name="инструмент",
+                    ),
+                ),
             ],
-            options={
-                'verbose_name': 'инструмент',
-                'verbose_name_plural': 'инструмент',
-            },
         ),
         migrations.CreateModel(
-            name='CocktailTool',
+            name="CocktailIngredient",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('number', models.IntegerField()),
-                ('cocktail', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='cocktail.Cocktail', verbose_name='коктейль')),
-                ('tool', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='cocktail.Tool', verbose_name='инструмент')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='CocktailIngredient',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('volume', models.FloatField(verbose_name='объем')),
-                ('cocktail', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='cocktail.Cocktail', verbose_name='коктейль')),
-                ('ingredient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='cocktail.Ingredient', verbose_name='ингредиент')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("volume", models.FloatField(verbose_name="объем")),
+                (
+                    "cocktail",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="cocktail.Cocktail",
+                        verbose_name="коктейль",
+                    ),
+                ),
+                (
+                    "ingredient",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="cocktail.Ingredient",
+                        verbose_name="ингредиент",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='cocktail',
-            name='ingredients',
-            field=models.ManyToManyField(through='cocktail.CocktailIngredient', to='cocktail.Ingredient', verbose_name='ингредиенты'),
+            model_name="cocktail",
+            name="ingredients",
+            field=models.ManyToManyField(
+                through="cocktail.CocktailIngredient",
+                to="cocktail.Ingredient",
+                verbose_name="ингредиенты",
+            ),
         ),
         migrations.AddField(
-            model_name='cocktail',
-            name='tools',
-            field=models.ManyToManyField(through='cocktail.CocktailTool', to='cocktail.Tool', verbose_name='инструменты'),
+            model_name="cocktail",
+            name="tools",
+            field=models.ManyToManyField(
+                through="cocktail.CocktailTool",
+                to="cocktail.Tool",
+                verbose_name="инструменты",
+            ),
         ),
     ]

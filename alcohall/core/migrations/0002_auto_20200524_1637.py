@@ -8,27 +8,53 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cocktail', '0003_auto_20200509_1329'),
-        ('core', '0001_initial'),
+        ("cocktail", "0003_auto_20200509_1329"),
+        ("core", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Like',
+            name="Like",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('is_active', models.BooleanField(default=False, verbose_name='Активный?')),
-                ('cocktail', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='cocktail.Cocktail', verbose_name='Коктейль')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Пользователь')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(default=False, verbose_name="Активный?"),
+                ),
+                (
+                    "cocktail",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="cocktail.Cocktail",
+                        verbose_name="Коктейль",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="Пользователь",
+                    ),
+                ),
             ],
-            options={
-                'verbose_name': 'Лайк',
-                'verbose_name_plural': 'Лайки',
-            },
+            options={"verbose_name": "Лайк", "verbose_name_plural": "Лайки",},
         ),
         migrations.AddField(
-            model_name='user',
-            name='likes',
-            field=models.ManyToManyField(through='core.Like', to='cocktail.Cocktail', verbose_name='Лайки пользователя'),
+            model_name="user",
+            name="likes",
+            field=models.ManyToManyField(
+                through="core.Like",
+                to="cocktail.Cocktail",
+                verbose_name="Лайки пользователя",
+            ),
         ),
     ]

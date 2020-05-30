@@ -8,22 +8,35 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('cocktail', '0002_auto_20200509_1329'),
+        ("cocktail", "0002_auto_20200509_1329"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Selection',
+            name="Selection",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=32, verbose_name='Название')),
-                ('description', models.CharField(max_length=512, verbose_name='Описание')),
-                ('created', models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')),
-                ('cocktails', models.ManyToManyField(to='cocktail.Cocktail')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=32, verbose_name="Название")),
+                (
+                    "description",
+                    models.CharField(max_length=512, verbose_name="Описание"),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="Дата создания"
+                    ),
+                ),
+                ("cocktails", models.ManyToManyField(to="cocktail.Cocktail")),
             ],
-            options={
-                'verbose_name': 'подборка',
-                'verbose_name_plural': 'подборки',
-            },
+            options={"verbose_name": "подборка", "verbose_name_plural": "подборки",},
         ),
     ]

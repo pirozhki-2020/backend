@@ -20,8 +20,8 @@ from django.urls import path, include
 from alcohall.application import settings
 
 urlpatterns = [
-                  path('user.', include('alcohall.core.urls')),
-                  path('cocktails.', include('alcohall.cocktail.urls')),
-                  path('selections.', include('alcohall.selections.urls')),
-                  path('admin/', admin.site.urls),
-              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path("user.", include("alcohall.core.urls")),
+    path("cocktails.", include("alcohall.cocktail.urls")),
+    path("selections.", include("alcohall.selections.urls")),
+    path("admin/", admin.site.urls),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

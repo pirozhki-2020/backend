@@ -16,7 +16,7 @@ class SelectionSerializer(BaseSelectionSerializer):
         obj._cocktails = obj.cocktails.all()
         return obj
 
-    cocktails = fields.Nested(BaseCocktailSerializer, many=True, attribute='_cocktails')
+    cocktails = fields.Nested(BaseCocktailSerializer, many=True, attribute="_cocktails")
 
 
 class ListSelectionSerializer(Serializer):

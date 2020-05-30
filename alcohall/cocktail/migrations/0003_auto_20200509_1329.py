@@ -8,19 +8,26 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cocktail', '0002_auto_20200509_1329'),
+        ("cocktail", "0002_auto_20200509_1329"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='cocktail',
-            name='author',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.DO_NOTHING, to=settings.AUTH_USER_MODEL, verbose_name='создатель'),
+            model_name="cocktail",
+            name="author",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="создатель",
+            ),
         ),
         migrations.AddField(
-            model_name='cocktail',
-            name='image',
-            field=models.ImageField(null=True, upload_to='', verbose_name='Изображение'),
+            model_name="cocktail",
+            name="image",
+            field=models.ImageField(
+                null=True, upload_to="", verbose_name="Изображение"
+            ),
         ),
     ]

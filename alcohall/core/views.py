@@ -18,7 +18,9 @@ class CredentialsForm(forms.Form):
 
 class SignUpView(ApiView):
     class Meta:
-        tags = ['user', ]
+        tags = [
+            "user",
+        ]
         method = HttpMethod.POST
         body_form = CredentialsForm
         serializer = UserSerializer
@@ -27,8 +29,7 @@ class SignUpView(ApiView):
         if self.request.user.is_authenticated:
             return self.request.user
 
-        email, password = self.request_body['email'], self.request_body[
-            'password']
+        email, password = self.request_body["email"], self.request_body["password"]
         existed_user = User.objects.filter(email=email)
         if existed_user.exists():
             raise EmailAlreadyRegistered
@@ -42,14 +43,15 @@ class SignUpView(ApiView):
 
 class SignInView(ApiView):
     class Meta:
-        tags = ['user', ]
+        tags = [
+            "user",
+        ]
         method = HttpMethod.POST
         body_form = CredentialsForm
         serializer = UserSerializer
 
     def execute(self, request, *args, **kwargs):
-        email, password = self.request_body['email'], self.request_body[
-            'password']
+        email, password = self.request_body["email"], self.request_body["password"]
         user = authenticate(request, username=email, password=password)
         if not user:
             raise AuthRequiredError
@@ -59,7 +61,9 @@ class SignInView(ApiView):
 
 class LogoutView(LoginRequiredMixin, ApiView):
     class Meta:
-        tags = ['user', ]
+        tags = [
+            "user",
+        ]
         method = HttpMethod.POST
 
     def execute(self, request, *args, **kwargs):
@@ -69,7 +73,9 @@ class LogoutView(LoginRequiredMixin, ApiView):
 
 class GetView(LoginRequiredMixin, ApiView):
     class Meta:
-        tags = ['user', ]
+        tags = [
+            "user",
+        ]
         method = HttpMethod.GET
         serializer = UserSerializer
 
@@ -80,14 +86,18 @@ class GetView(LoginRequiredMixin, ApiView):
 class LikedView(LoginRequiredMixin, ListApiView):
     class Meta:
         model = Cocktail
-        tags = ['user', ]
+        tags = [
+            "user",
+        ]
         method = HttpMethod.GET
         serializer = ListCocktailSerializer
         serializer_many = False
 
     def get_queryset(self):
         qs = super().get_queryset()
-        qs = qs.filter(like__user=self.request.user, like__is_active=True) \
-            .distinct() \
-            .order_by('id')
-        return {'cocktails': qs}
+        qs = (
+            qs.filter(like__user=self.request.user, like__is_active=True)
+            .distinct()
+            .order_by("id")
+        )
+        return {"cocktails": qs}

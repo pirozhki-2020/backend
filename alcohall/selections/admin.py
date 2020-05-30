@@ -6,4 +6,4 @@ from alcohall.selections.models import Selection
 
 @admin.register(Selection)
 class SelectionAdmin(ModelAdmin):
-    filter_horizontal = ('cocktails',)
+    filter_horizontal = ("cocktails",)
