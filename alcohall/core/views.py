@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django_serializer.v2.exceptions import AuthRequiredError
 from django_serializer.v2.views import HttpMethod, ApiView, ListApiView
 from django_serializer.v2.views.mixins import LoginRequiredMixin
@@ -57,15 +57,23 @@ class SignInView(ApiView):
         return user
 
 
-class GetView(ApiView):
+class LogoutView(LoginRequiredMixin, ApiView):
+    class Meta:
+        tags = ['user', ]
+        method = HttpMethod.POST
+
+    def execute(self, request, *args, **kwargs):
+        logout(request)
+        return {}
+
+
+class GetView(LoginRequiredMixin, ApiView):
     class Meta:
         tags = ['user', ]
         method = HttpMethod.GET
         serializer = UserSerializer
 
     def execute(self, request, *args, **kwargs):
-        if not self.request.user.is_authenticated:
-            raise AuthRequiredError
         return self.request.user
 
 
